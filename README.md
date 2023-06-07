@@ -9,7 +9,7 @@ A powerful PHP library designed to seamlessly create backups of MySQL databases 
 
 - **Effortless MySQL Database Backups**: Seamlessly create backups of MySQL databases with table structure and data preservation.
 - **Secure and Reliable**: Built on PDO, this library ensures secure database connections and robust backup operations.
-- **Modern and Future-Proof**: Utilizes PHP 8.2 features and follows contemporary coding practices for enhanced performance, readability, and maintainability.
+- **Modern and Future-Proof**: Utilizes PHP 8 features and follows contemporary coding practices for enhanced performance, readability, and maintainability.
 - **Easy Integration**: Simple and intuitive interface enables developers to quickly integrate the library into their projects.
 - **Extensible and Customizable**: Flexible architecture allows for easy customization and adaptation to different backup requirements.
 - **Comprehensive Error Handling**: Detailed error messages and exception handling provide a robust backup solution.
