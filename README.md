@@ -5,6 +5,10 @@
 
 A powerful PHP library designed to seamlessly create backups of MySQL databases using PDO, providing developers with a reliable and secure solution. 
 
+<div align="center">
+    If you find this project helpful or useful, please consider giving it a ⭐️ star on GitHub! Your support is greatly appreciated.
+</div>
+
 ## Features
 
 - **Effortless MySQL Database Backups**: Seamlessly create backups of MySQL databases with table structure and data preservation.
