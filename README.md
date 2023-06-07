@@ -1,6 +1,25 @@
-# MySQL Backup
+# MySQL Backup Library
 
-## How to use
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/ramazancetinkaya/mysql-backup)
+
+A powerful PHP library designed to seamlessly create backups of MySQL databases using PDO, providing developers with a reliable and secure solution. 
+
+## Features
+
+- **Effortless MySQL Database Backups**: Seamlessly create backups of MySQL databases with table structure and data preservation.
+- **Secure and Reliable**: Built on PDO, this library ensures secure database connections and robust backup operations.
+- **Modern and Future-Proof**: Utilizes PHP 8.2 features and follows contemporary coding practices for enhanced performance, readability, and maintainability.
+- **Easy Integration**: Simple and intuitive interface enables developers to quickly integrate the library into their projects.
+- **Extensible and Customizable**: Flexible architecture allows for easy customization and adaptation to different backup requirements.
+- **Comprehensive Error Handling**: Detailed error messages and exception handling provide a robust backup solution.
+- **Highly Documented**: Extensive documentation guides developers through installation, usage, and customization.
+
+## Screenshot
+
+![Screenshot](https://i.imgur.com/AEp4wJg.png)
+
+## Usage
 
 To use the "MySQL Backup" library, you will need to follow these steps:
 
@@ -48,14 +67,17 @@ When you run the script, it will create a backup file at the specified location 
 
 Remember to handle any potential exceptions or errors that may occur during the backup creation process.
 
-## Authors
-
-**Ramazan Çetinkaya**
-- <https://github.com/ramazancetinkaya>
+## Contributing
+Contributions are welcome! If you find any issues or have suggestions for improvement, please open an issue or submit a pull request.
 
 ## License
 
 This project is licensed under the [MIT] License - see the LICENSE.md file for details.
+
+## Authors
+
+**Ramazan Çetinkaya**
+- <https://github.com/ramazancetinkaya>
 
 ## Copyright
 
