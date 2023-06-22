@@ -36,6 +36,7 @@
 * [Disclaimer](#disclaimer)
 * [Contributing](#contributing)
 * [License](#license)
+* [Authors](#authors)
 * [Copyright](#copyright)
 
 ## Introduction
