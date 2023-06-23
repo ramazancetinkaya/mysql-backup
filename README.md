@@ -81,6 +81,7 @@ Make sure you have <a href="https://git-scm.com/">Git</a> installed on your syst
 
 ## Usage
 
+- To back up a MySQL database to an SQL file:
 ```php
 $dbConfig = [
     'host'     => 'localhost',
@@ -107,19 +108,21 @@ try {
         echo "Database backup failed!\n";
     }
 
-    // Restore a database
-    /*
-    $backupFile = 'backup/backup_20230622_134302.sql';
-    $restoreSuccessful = $backupLibrary->restoreDatabase($backupFile);
-
-    if ($restoreSuccessful) {
-        echo "Database restored successfully.\n";
-    } else {
-        echo "Database restoration failed.\n";
-    }
-    */
 } catch (PDOException $e) {
     echo "An error occurred: " . $e->getMessage() . "\n";
+}
+```
+
+- To restore a MySQL database from a SQL backup file:
+```php
+// Restore a database
+$backupFile = 'backup/backup_20230622_134302.sql';
+$restoreSuccessful = $backupLibrary->restoreDatabase($backupFile);
+
+if ($restoreSuccessful) {
+  echo "Database restored successfully.\n";
+} else {
+  echo "Database restoration failed.\n";
 }
 ```
 
