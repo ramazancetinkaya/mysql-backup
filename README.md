@@ -5,6 +5,10 @@
 [![GitHub stars](https://img.shields.io/github/stars/ramazancetinkaya/mysql-backup.svg?style=social)](https://github.com/ramazancetinkaya/mysql-backup/stargazers)
 
 <p align="center">
+🌟🌟🌟 Star the repository if you find it useful! 🌟🌟🌟
+</p>
+
+<p align="center">
   <a href="https://github.com/ramazancetinkaya/mysql-backup">
     <img src="https://www.mysql.com/common/logos/logo-mysql-170x115.png" alt="Logo">
   </a>
