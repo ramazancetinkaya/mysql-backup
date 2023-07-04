@@ -75,8 +75,20 @@ To get started with the MySQL Backup & Restore Library, follow these steps:
 
 ### Installation
 
-1) Clone the repository:
-  - To clone this repository to your local machine, use the following command:
+1) Composer
+
+- You can install the Logger library via Composer. Run the following command:
+
+```bash
+composer require ramazancetinkaya/mysql-backup
+```
+
+Make sure you have Composer installed on your system. If not, you can download and install it from the official <a href="https://getcomposer.org/">Composer</a> website.
+
+2) Clone the repository
+
+- To clone this repository to your local machine, use the following command:
+
 ```sh
 git clone https://github.com/ramazancetinkaya/mysql-backup.git
 ```
