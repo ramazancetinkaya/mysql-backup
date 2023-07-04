@@ -13,6 +13,8 @@
  * @link      https://github.com/ramazancetinkaya/mysql-backup
  */
 
+namespace ramazancetinkaya;
+
 /**
  * Backup and restore MySQL databases.
  *
