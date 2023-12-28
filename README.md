@@ -120,9 +120,9 @@ $backupPath = 'backup/';
 $backupSuccessful = $backupLibrary->backupDatabase($backupPath);
 
 if ($backupSuccessful) {
-    echo "Backup successful!";
+    echo "Database backup created successfully.";
 } else {
-    echo "Backup failed!";
+    echo "Database backup failed!";
 }
 
 ```
@@ -134,7 +134,7 @@ $backupFile = 'backup/backup_20230622_134302.sql';
 $restoreSuccessful = $backupLibrary->restoreDatabase($backupFile);
 
 if ($restoreSuccessful) {
-    echo "Database restored successfully!";
+    echo "Database restored successfully.";
 } else {
     echo "Database restoration failed!";
 }
