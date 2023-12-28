@@ -1,7 +1,7 @@
 <h1 align="center">MySQL Backup & Restore Library</h1>
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/ramazancetinkaya/password-generator)
+[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/ramazancetinkaya/password-generator)
 [![GitHub stars](https://img.shields.io/github/stars/ramazancetinkaya/mysql-backup.svg?style=social)](https://github.com/ramazancetinkaya/mysql-backup/stargazers)
 
 <p align="center">
