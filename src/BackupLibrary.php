@@ -139,7 +139,7 @@ class BackupLibrary
     {
         $footer = "-- End of MySQL Backup.\n";
         $footer .= "-- Thank you for using the MySQL Backup library!\n";
-        $footer .= "-- Ramazan Çetinkaya <cetinkayaramazan@protonmail.com>\n";
+        $footer .= "-- Ramazan Çetinkaya <ramazancetinkayadev@outlook.com>\n";
         $footer .= "-- https://github.com/ramazancetinkaya\n";
     
         file_put_contents($backupFile, $footer, FILE_APPEND);
