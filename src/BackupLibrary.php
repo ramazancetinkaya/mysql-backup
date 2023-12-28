@@ -14,7 +14,7 @@
  */
 
 namespace ramazancetinkaya;
-use \PDO;
+use PDO;
 
 /**
  * Backup and restore MySQL databases.
