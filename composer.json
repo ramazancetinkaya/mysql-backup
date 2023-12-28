@@ -1,20 +1,30 @@
 {
     "name": "ramazancetinkaya/mysql-backup",
-    "description": "The MySQL Backup & Restore tool offers streamlined solutions for handling database backup and restoration tasks",
+    "description": "MySQL Backup & Restore Library",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "mysql",
+        "database",
+        "backup",
+        "restore"
+    ],
     "authors": [
         {
             "name": "Ramazan Çetinkaya",
-            "email": "ramazancetinkayadev@outlook.com"
+            "email": "ramazancetinkayadev@outlook.com",
+            "homepage": "https://github.com/ramazancetinkaya"
         }
     ],
     "require": {
-        "php": "^8.0"
+        "php": ">=8.0",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*"
     },
     "autoload": {
         "psr-4": {
             "ramazancetinkaya\\": "src/"
         }
-    }
+    },
+    "minimum-stability": "stable"
 }
