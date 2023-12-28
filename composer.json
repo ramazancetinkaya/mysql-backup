@@ -1,12 +1,12 @@
 {
     "name": "ramazancetinkaya/mysql-backup",
-    "description": "MySQL Backup & Restore tool provides efficient solutions for database backup and restoration tasks",
+    "description": "The MySQL Backup & Restore tool offers streamlined solutions for handling database backup and restoration tasks",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
             "name": "Ramazan Çetinkaya",
-            "email": "cetinkayaramazan@protonmail.com"
+            "email": "ramazancetinkayadev@outlook.com"
         }
     ],
     "require": {
