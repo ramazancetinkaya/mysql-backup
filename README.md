@@ -77,7 +77,7 @@ To get started with the MySQL Backup & Restore Library, follow these steps:
 
 1) Composer
 
-- You can install the Logger library via Composer. Run the following command:
+- You can install the library via Composer. Run the following command:
 
 ```bash
 composer require ramazancetinkaya/mysql-backup
@@ -113,7 +113,7 @@ $pdo = new PDO($dsn, $username, $password);
 $backupLibrary = new BackupLibrary($pdo);
 ```
 
-- To back up a MySQL database to an SQL file:
+- Perform a database backup:
 ```php
 // Perform a backup
 $backupPath = 'backup/';
@@ -127,7 +127,7 @@ if ($backupSuccessful) {
 
 ```
 
-- To restore a MySQL database from a SQL backup file:
+- Perform a database restore:
 ```php
 // Restore a database
 $backupFile = 'backup/backup_20230622_134302.sql';
