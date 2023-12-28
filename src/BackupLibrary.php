@@ -9,7 +9,7 @@
  * @package   BackupLibrary
  * @author    Ramazan Çetinkaya
  * @license   MIT License <https://opensource.org/licenses/MIT>
- * @version   2.0.0
+ * @version   1.0.0
  * @link      https://github.com/ramazancetinkaya/mysql-backup
  */
 
