@@ -97,36 +97,34 @@ Make sure you have <a href="https://git-scm.com/">Git</a> installed on your syst
 
 ## Usage
 
+```php
+require_once 'vendor/autoload.php'; // Include Composer's autoloader
+
+use ramazancetinkaya\BackupLibrary;
+
+// Set up your database connection
+$dsn = 'mysql:host=localhost;dbname=your_database';
+$username = 'your_username';
+$password = 'your_password';
+
+$pdo = new PDO($dsn, $username, $password);
+
+// Create an instance of BackupLibrary
+$backupLibrary = new BackupLibrary($pdo);
+```
+
 - To back up a MySQL database to an SQL file:
 ```php
-$dbConfig = [
-    'host'     => 'localhost',
-    'database' => 'your_dbname',
-    'username' => 'your_username',
-    'password' => 'your_password'
-];
-$dsn = 'mysql:host=' . $dbConfig['host'] . ';dbname=' . $dbConfig['database'];
+// Perform a backup
+$backupPath = 'backup/';
+$backupSuccessful = $backupLibrary->backupDatabase($backupPath);
 
-try {
-    // Create a PDO instance for your MySQL database
-    $pdo = new PDO($dsn, $dbConfig['username'], $dbConfig['password']);
-
-    // Initialize the backup library
-    $backupLibrary = new BackupLibrary($pdo);
-
-    // Backup a database
-    $backupPath = 'backup/';
-    $backupSuccessful = $backupLibrary->backupDatabase($backupPath);
-
-    if ($backupSuccessful) {
-        echo "Database backup created successfully.\n";
-    } else {
-        echo "Database backup failed!\n";
-    }
-
-} catch (PDOException $e) {
-    echo "An error occurred: " . $e->getMessage() . "\n";
+if ($backupSuccessful) {
+    echo "Backup successful!";
+} else {
+    echo "Backup failed!";
 }
+
 ```
 
 - To restore a MySQL database from a SQL backup file:
@@ -136,9 +134,9 @@ $backupFile = 'backup/backup_20230622_134302.sql';
 $restoreSuccessful = $backupLibrary->restoreDatabase($backupFile);
 
 if ($restoreSuccessful) {
-  echo "Database restored successfully.\n";
+    echo "Database restored successfully!";
 } else {
-  echo "Database restoration failed.\n";
+    echo "Database restoration failed!";
 }
 ```
 
