@@ -2,13 +2,8 @@
     "name": "ramazancetinkaya/mysql-backup",
     "description": "MySQL Backup & Restore Library",
     "type": "library",
+    "keywords": ["mysql", "backup", "restore", "pdo", "database"],
     "license": "MIT",
-    "keywords": [
-        "mysql",
-        "database",
-        "backup",
-        "restore"
-    ],
     "authors": [
         {
             "name": "Ramazan Çetinkaya",
@@ -16,6 +11,7 @@
             "homepage": "https://github.com/ramazancetinkaya"
         }
     ],
+    "version": "1.0.0",
     "require": {
         "php": ">=8.0",
         "ext-pdo": "*",
@@ -26,5 +22,5 @@
             "ramazancetinkaya\\": "src/"
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
