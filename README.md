@@ -1,12 +1,11 @@
 <h1 align="center">MySQL Backup & Restore Library</h1>
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://github.com/ramazancetinkaya/password-generator)
-[![GitHub stars](https://img.shields.io/github/stars/ramazancetinkaya/mysql-backup.svg?style=social)](https://github.com/ramazancetinkaya/mysql-backup/stargazers)
-
-<p align="center">
-🌟🌟🌟 Star the repository if you find it useful! 🌟🌟🌟
-</p>
+[![Latest Version](https://img.shields.io/github/v/release/ramazancetinkaya/mysql-backup)](https://github.com/ramazancetinkaya/mysql-backup/releases)
+![PHP](https://img.shields.io/badge/php-%3E%3D%208.0-8892BF.svg)
+[![GitHub Issues](https://img.shields.io/github/issues/ramazancetinkaya/mysql-backup.svg)](https://github.com/ramazancetinkaya/mysql-backup/issues)
+[![GitHub Forks](https://img.shields.io/github/forks/ramazancetinkaya/mysql-backup.svg)](https://github.com/ramazancetinkaya/mysql-backup/network)
+[![GitHub Stars](https://img.shields.io/github/stars/ramazancetinkaya/mysql-backup.svg)](https://github.com/ramazancetinkaya/mysql-backup/stargazers)
 
 <p align="center">
   <a href="https://github.com/ramazancetinkaya/mysql-backup">
@@ -17,15 +16,29 @@
 
   <p align="center">
     A powerful and modern PHP library for backing up and restoring MySQL databases using PDO.
-    <br />
+    <br>
     <a href="https://github.com/ramazancetinkaya/mysql-backup/blob/main/README.md"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
+    <br>
+    <br>
     <a href="https://github.com/ramazancetinkaya/mysql-backup/issues">Report a Bug</a>
     ·
     <a href="https://github.com/ramazancetinkaya/mysql-backup/pulls">New Pull Request</a>
   </p>
 </p>
+
+## 🌟 Star this Repository!
+
+If you find the MySQL Backup & Restore library helpful or interesting, consider giving it a star! ⭐️
+
+Your star helps us grow and motivates us to continue improving the library. It also makes it easier for others to discover and benefit from this project.
+
+### How to Star?
+
+1. **Login to Your GitHub Account:** You need to have a GitHub account.
+2. **Visit the Repository:** Go to the [MySQL Backup & Restore Repository](https://github.com/ramazancetinkaya/mysql-backup).
+3. **Click the Star Button:** On the top-right corner of the page, you'll find a "Star" button. Click on it!
+
+That's it! Thank you for your support! 🚀
 
 ## Table of Contents
 
@@ -34,13 +47,13 @@
 * [Screenshot](#screenshot)
 * [Features](#features)
 * [Requirements](#requirements)
-* [Getting Started](#getting-started)
 * [Installation](#installation)
 * [Usage](#usage)
 * [Disclaimer](#disclaimer)
 * [Contributing](#contributing)
+* [Contact](#contact)
+* [Credits](#credits)
 * [License](#license)
-* [Authors](#authors)
 * [Copyright](#copyright)
 
 ## Introduction
@@ -65,35 +78,26 @@ The MySQL Backup & Restore Library is a PHP library that provides functionality 
 
 ## Requirements
 
-- PHP 8 or higher
+- PHP version 8.0 or higher
 - PDO extension enabled
 - MySQL database
+- Composer (for installation)
 
-## Getting Started
+## Installation
 
-To get started with the MySQL Backup & Restore Library, follow these steps:
+This library can be easily installed using [Composer](https://getcomposer.org/), a modern PHP dependency manager.
 
-### Installation
+### Step 1: Install Composer
 
-1) Composer
+If you don't have Composer installed, you can download and install it by following the instructions on the [official Composer website](https://getcomposer.org/download/).
 
-- You can install the library via Composer. Run the following command:
+### Step 2: Install the Library
+
+Once Composer is installed, you can install the `mysql-backup` library by running the following command in your project's root directory:
 
 ```bash
 composer require ramazancetinkaya/mysql-backup
 ```
-
-Make sure you have Composer installed on your system. If not, you can download and install it from the official <a href="https://getcomposer.org/">Composer</a> website.
-
-2) Clone the repository
-
-- To clone this repository to your local machine, use the following command:
-
-```sh
-git clone https://github.com/ramazancetinkaya/mysql-backup.git
-```
-
-Make sure you have <a href="https://git-scm.com/">Git</a> installed on your system before running this command.
 
 ## Usage
 
@@ -142,30 +146,51 @@ if ($restoreSuccessful) {
 
 ## Disclaimer
 
-The code and information provided in this repository are for educational and informational purposes only. The author and contributors make no representations as to the accuracy, completeness, currentness, suitability, or validity of any information in this repository and will not be liable for any errors, omissions, or delays in this information or any losses, injuries, or damages arising from its use.
+This library is provided as-is without any warranties, expressed or implied. The use of this library is at your own risk, and the developers will not be liable for any damages or losses resulting from its use.
 
-The use of the code and information in this repository is at your own risk. It is your responsibility to ensure that any code or information you use from this repository is free of viruses or other harmful components. The author and contributors disclaim any responsibility for any harm resulting from the use of this repository.
+While every effort has been made to ensure the accuracy and reliability of the code in this library, it's important to understand that no guarantee is provided regarding its correctness or suitability for any purpose.
 
-Please note that the code and information provided in this repository may be subject to change without notice. The author and contributors reserve the right to modify, update, or remove any content in this repository at their discretion.
+Users are encouraged to review and test the functionality of this library in their own environments before deploying it in production or critical systems.
 
-While efforts are made to keep the information up to date and accurate, it is recommended to refer to official documentation or seek professional advice when using the code or information in this repository for any specific purpose.
+This disclaimer extends to all parts of the library and its documentation.
 
-By using the code and information in this repository, you acknowledge and agree to these terms and conditions outlined in this disclaimer.
+**By using the Library, you agree to these terms and conditions. If you do not agree with any part of this disclaimer, do not use the Library.**
+
+---
+
+This disclaimer was last updated on January 4, 2024.
 
 ## Contributing
 
 Contributions are welcome! If you encounter any issues or have suggestions for improvements, please create an issue or submit a pull request. 
 Make sure to follow the existing coding style and provide tests for your changes.
 
+## Contact
+
+For any inquiries or feedback, feel free to reach out to us via email.
+
+📧 Email: [ramazancetinkayadev@outlook.com](mailto:ramazancetinkayadev@outlook.com)
+
+## Credits
+
+This library was made possible by the following awesome contributors:
+
+- **Ramazan Çetinkaya** - [@ramazancetinkaya](https://github.com/ramazancetinkaya)
+  - Lead Developer
+
+Special thanks to the following resources:
+
+- [PHP Documentation](https://www.php.net/docs.php) - Valuable information on PHP programming language.
+- [Composer](https://getcomposer.org/) - Dependency manager for PHP.
+
+If you've contributed to this project and your name is not listed, please let us know, and we'll add you!
+
+Thank you to everyone who has helped make this project better!
+
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Authors
-
-**Ramazan Çetinkaya**
-- <https://github.com/ramazancetinkaya>
+This project is licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file.
 
 ## Copyright
 
-Copyright (c) [2023] [Ramazan Çetinkaya]
+© 2024 Ramazan Çetinkaya. All rights reserved.
