@@ -26,6 +26,12 @@
   </p>
 </p>
 
+<br>
+
+<p align="center">
+  You have <a href="https://github.com/ramazancetinkaya/mysql-backup/blob/main/MESSAGE.md">1 new message</a> from the developer.
+</p>
+
 ## 🌟 Star this Repository!
 
 If you find the MySQL Backup & Restore library helpful or interesting, consider giving it a star! ⭐️
