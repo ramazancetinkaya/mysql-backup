@@ -122,8 +122,8 @@ $mysqlBackup = new MySQLBackup($db);
 $backup = $mysqlBackup->backup();
 
 // Backs up the specified tables
-$backup->backup(['tablename1']);
-$backup->backup(['tablename1', 'tablename2']);
+$backup = $mysqlBackup->backup(['tablename1']);
+$backup = $mysqlBackup->backup(['tablename1', 'tablename2']);
 
 // Include table data in the backup or vice versa
 $backup = $mysqlBackup->backup(true); // Default is true
