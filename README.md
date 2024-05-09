@@ -1,11 +1,9 @@
 <h1 align="center">MySQL Backup & Restore Library</h1>
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Latest Version](https://img.shields.io/github/v/release/ramazancetinkaya/mysql-backup)](https://github.com/ramazancetinkaya/mysql-backup/releases)
-![PHP](https://img.shields.io/badge/php-%3E%3D%208.0-8892BF.svg)
-[![GitHub Issues](https://img.shields.io/github/issues/ramazancetinkaya/mysql-backup.svg)](https://github.com/ramazancetinkaya/mysql-backup/issues)
-[![GitHub Forks](https://img.shields.io/github/forks/ramazancetinkaya/mysql-backup.svg)](https://github.com/ramazancetinkaya/mysql-backup/network)
-[![GitHub Stars](https://img.shields.io/github/stars/ramazancetinkaya/mysql-backup.svg)](https://github.com/ramazancetinkaya/mysql-backup/stargazers)
+[![License](https://img.shields.io/github/license/ramazancetinkaya/mysql-backup)](https://github.com/ramazancetinkaya/mysql-backup/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/ramazancetinkaya/mysql-backup)](https://github.com/ramazancetinkaya/mysql-backup/issues)
+[![GitHub stars](https://img.shields.io/github/stars/ramazancetinkaya/mysql-backup)](https://github.com/ramazancetinkaya/mysql-backup/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/ramazancetinkaya/mysql-backup)](https://github.com/ramazancetinkaya/mysql-backup/network)
 
 <p align="center">
   <a href="https://github.com/ramazancetinkaya/mysql-backup">
@@ -27,10 +25,6 @@
 </p>
 
 <br>
-
-<p align="center">
-  You have <a href="https://github.com/ramazancetinkaya/mysql-backup/blob/main/MESSAGE.md">1 new message</a> from the developer.
-</p>
 
 ## 🌟 Star this Repository!
 
@@ -57,35 +51,38 @@ That's it! Thank you for your support! 🚀
 * [Usage](#usage)
 * [Disclaimer](#disclaimer)
 * [Contributing](#contributing)
-* [Contact](#contact)
-* [Credits](#credits)
+* [Authors](#authors)
 * [License](#license)
 * [Copyright](#copyright)
 
 ## Introduction
 
-This library is designed to be easy to use for both beginners and experienced developers.
+This library is meticulously crafted to cater to a wide spectrum of users, ranging from novices venturing into the field to seasoned developers seeking seamless integration and robust functionality.
 
 ## About the Project
 
-The MySQL Backup & Restore Library is a PHP library that provides functionality for backing up and restoring MySQL databases. It offers a simple and intuitive API, leveraging the power of PDO for seamless database operations.
+The MySQL Backup & Restore Library furnishes comprehensive functionalities tailored for the seamless backup and restoration of MySQL databases through PHP. Leveraging this library, developers can effectively safeguard vital data housed within MySQL databases, ensuring robust data integrity and facilitating swift recovery in the event of data loss or system failures.
 
 ### Screenshot
 
-![Screenshot](https://i.imgur.com/piAh4Xf.png)
+![Screenshot](mysql-backup.png)
 
 ## Features
 
-* Back up a MySQL database to a SQL file.
-* Restore a MySQL database from a SQL backup file.
+* Backup entire MySQL databases or specific tables.
+* Restore databases from backup files.
+* Generate SQL dumps in a structured format.
 * Automatic generation of backup filenames with date and time.
-* Include informative header comments in the backup file.
-* Support for modern PHP versions. (PHP 8 and above)
+* Archive backups in ZIP format.
+* Send backups via email.
+* Easy to integrate into existing PHP projects.
 
 ## Requirements
 
-- PHP version 8.0 or higher
-- PDO extension enabled
+- PHP version 8.0 or **higher**
+- PDO extension **enabled**
+- ZipArchive extension **enabled**
+- PHPMailer
 - MySQL database
 - Composer (for installation)
 
@@ -108,42 +105,52 @@ composer require ramazancetinkaya/mysql-backup
 ## Usage
 
 ```php
-require_once 'vendor/autoload.php'; // Include Composer's autoloader
+require 'vendor/autoload.php'; // Include Composer's autoloader
 
-use ramazancetinkaya\BackupLibrary;
+use DatabaseBackupManager\MySQLBackup;
 
-// Set up your database connection
-$dsn = 'mysql:host=localhost;dbname=your_database';
-$username = 'your_username';
-$password = 'your_password';
+// Initialize PDO connection
+$db = new PDO('mysql:host=localhost;dbname=my_database', 'username', 'password');
 
-$pdo = new PDO($dsn, $username, $password);
-
-// Create an instance of BackupLibrary
-$backupLibrary = new BackupLibrary($pdo);
+// Create an instance of MySQLBackup
+$mysqlBackup = new MySQLBackup($db);
 ```
 
 - Perform a database backup:
 ```php
-// Perform a backup
-$backupPath = 'backup/';
-$backupSuccessful = $backupLibrary->backupDatabase($backupPath);
+// Backs up all tables
+$backup = $mysqlBackup->backup();
 
-if ($backupSuccessful) {
+// Backs up the specified tables
+$backup->backup(['tablename1']);
+$backup->backup(['tablename1', 'tablename2']);
+
+// Include table data in the backup or vice versa
+$backup = $mysqlBackup->backup(true); // Default is true
+
+// Archiving
+$backup = $mysqlBackup->backup(true, true); // Default is false
+
+// Send the backup file by email
+$backup = $mysqlBackup->backup(true, true, 'recipient@example.com'); // Default is null
+
+if ($backup) {
     echo "Database backup created successfully.";
 } else {
     echo "Database backup failed!";
 }
-
 ```
 
 - Perform a database restore:
 ```php
 // Restore a database
-$backupFile = 'backup/backup_20230622_134302.sql';
-$restoreSuccessful = $backupLibrary->restoreDatabase($backupFile);
+$backupFile = 'backup_wordpress-2024-05-09_214345.sql';
+$restore = $mysqlBackup->restore($backupFile);
 
-if ($restoreSuccessful) {
+// Whether to drop existing tables before restoring data
+$restore = $mysqlBackup->restore($backupFile, true); // Default is true.
+
+if ($restore) {
     echo "Database restored successfully.";
 } else {
     echo "Database restoration failed!";
@@ -164,34 +171,15 @@ This disclaimer extends to all parts of the library and its documentation.
 
 ---
 
-This disclaimer was last updated on January 4, 2024.
+This disclaimer was last updated on May 9, 2024.
 
 ## Contributing
 
-Contributions are welcome! If you encounter any issues or have suggestions for improvements, please create an issue or submit a pull request. 
-Make sure to follow the existing coding style and provide tests for your changes.
+Contributions are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or create a pull request.
 
-## Contact
-
-For any inquiries or feedback, feel free to reach out to us via email.
-
-📧 Email: [ramazancetinkayadev@outlook.com](mailto:ramazancetinkayadev@outlook.com)
-
-## Credits
-
-This library was made possible by the following awesome contributors:
+## Authors
 
 - **Ramazan Çetinkaya** - [@ramazancetinkaya](https://github.com/ramazancetinkaya)
-  - Lead Developer
-
-Special thanks to the following resources:
-
-- [PHP Documentation](https://www.php.net/docs.php) - Valuable information on PHP programming language.
-- [Composer](https://getcomposer.org/) - Dependency manager for PHP.
-
-If you've contributed to this project and your name is not listed, please let us know, and we'll add you!
-
-Thank you to everyone who has helped make this project better!
 
 ## License
 
