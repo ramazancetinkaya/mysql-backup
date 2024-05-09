@@ -1,296 +1,392 @@
 <?php
-
 /**
  * MySQL Backup & Restore Library
  *
- * This library provides functionality for backing up and restoring MySQL databases using PDO.
- *
- * @category  Library
- * @package   BackupLibrary
- * @author    Ramazan Çetinkaya
- * @license   MIT License <https://opensource.org/licenses/MIT>
- * @version   1.0.0
- * @link      https://github.com/ramazancetinkaya/mysql-backup
+ * This library provides functionalities for backing up and restoring MySQL databases.
+ * 
+ * @category Library
+ * @package  MySQLBackup
+ * @author   Ramazan Çetinkaya <ramazancetinkayadev@hotmail.com>
+ * @version  1.0
+ * @license  MIT License
+ * @link     https://github.com/ramazancetinkaya/mysql-backup
  */
 
-namespace ramazancetinkaya;
-use PDO;
+namespace DatabaseBackupManager;
 
-/**
- * Backup and restore MySQL databases.
- *
- * @class BackupLibrary
- */
-class BackupLibrary
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+class MySQLBackup
 {
+
     /**
-     * PDO instance for the database connection.
-     *
+     * The PDO database connection instance
      * @var PDO
      */
-    private $pdo;
+    private $db;
 
     /**
-     * BackupLibrary constructor.
-     *
-     * @param PDO $pdo PDO instance for the database connection.
+     * The directory to store backup files
+     * @var string
      */
-    public function __construct(PDO $pdo)
+    private string $backupFolder;
+
+    /**
+     * Constructor to initialize PDO connection.
+     * 
+     * @param PDO $db PDO instance for database connection
+     * @param string $backupFolder Path to the backup folder
+     */
+    public function __construct(PDO $db, $backupFolder = 'backup') 
     {
-        $this->pdo = $pdo;
+        $this->db = $db;
+        $this->backupFolder = rtrim($backupFolder, '/') . '/';
+        $this->checkBackupFolder();
+
+        // Check if ZipArchive class is available
+        if (!class_exists('ZipArchive')) {
+            throw new Exception('ZipArchive class not found. Please enable the Zip module in your PHP configuration.');
+        }
     }
 
     /**
-     * Performs a backup of the specified database and saves it to a SQL file.
+     * Check if the backup folder exists and has appropriate permissions.
+     * If the folder does not exist, attempt to create it with appropriate permissions.
+     * If the folder exists but does not have write permissions, attempt to set the permissions.
      *
-     * @param string $backupPath Path where the backup file should be saved.
-     * @return bool True if the backup is successful, false otherwise.
-     * @throws PDOException If an error occurs during the backup process.
+     * @throws Exception If unable to create or set permissions for the backup folder.
      */
-    public function backupDatabase(string $backupPath): bool
+    private function checkBackupFolder(): void
     {
-        $backupFile = $this->generateBackupFilename($backupPath);
+        // Check if the backup folder exists
+        if (!file_exists($this->backupFolder)) 
+        {
+            // If the folder does not exist, attempt to create it
+            if (!mkdir($this->backupFolder, 0755, true)) 
+            {
+                // If unable to create the folder, throw an exception
+                throw new Exception('Failed to create backup folder.');
+            }
+        }
 
+        // Check if the backup folder is writable
+        if (!is_writable($this->backupFolder)) 
+        {
+            // If the folder is not writable, attempt to set the permissions
+            if (!chmod($this->backupFolder, 0755)) 
+            {
+                // If unable to set permissions, throw an exception
+                throw new Exception('Failed to set write permissions for backup folder.');
+            }
+        }
+    }
+
+    /**
+     * Backup the database tables.
+     * 
+     * @param array|string|null $tables Names of the tables to backup. If null, all tables will be backed up.
+     * @param bool $includeData Whether to include table data in the backup.
+     * @param bool $archive Whether to archive the backup file.
+     * @param string|null $emailRecipient Email address to send the backup file.
+     * @return string Path to the generated backup file.
+     * @throws Exception If backup process fails.
+     */
+    public function backup($tables = null, $includeData = true, $archive = false, $emailRecipient = null) 
+    {
         try {
-            $this->createBackupDirectory($backupPath);
+            // Disable foreign key checks during backup
+            $this->db->exec('SET foreign_key_checks = 0');
+
+            // Start transaction to prevent any changes during backup
+            $this->db->beginTransaction();
+
+            // Generate backup file name
+            $backupFileName = $this->generateBackupFileName($tables);
+
+            // Open backup file for writing
+            $backupFile = fopen($backupFileName, 'w');
+
+            // Write header information to the backup file
             $this->writeBackupHeader($backupFile);
-            $this->backupTables($backupFile);
-            $this->writeBackupFooter($backupFile);
 
-            return true;
-        } catch (PDOException $e) {
-            // Handle the exception or log the error
-            throw $e;
-        }
-
-        return false;
-    }
-
-    /**
-     * Restores a MySQL database from a SQL backup file.
-     *
-     * @param string $backupFile Path to the SQL backup file.
-     * @return bool True if the restore is successful, false otherwise.
-     * @throws PDOException If an error occurs during the restore process.
-     */
-    public function restoreDatabase(string $backupFile): bool
-    {
-        try {
-            $this->disableForeignKeyChecks();
-            $this->executeSqlFile($backupFile);
-            $this->enableForeignKeyChecks();
-
-            return true;
-        } catch (PDOException $e) {
-            // Handle the exception or log the error
-            throw $e;
-        }
-
-        return false;
-    }
-
-    /**
-     * Generates a unique backup filename based on the current date and time.
-     *
-     * @param string $backupPath Path where the backup file should be saved.
-     * @return string The generated backup filename.
-     */
-    private function generateBackupFilename(string $backupPath): string
-    {
-        $filename = 'backup_' . date('Ymd_His') . '.sql';
-        return rtrim($backupPath, '/') . '/' . $filename;
-    }
-
-    /**
-     * Creates the backup directory if it doesn't exist.
-     *
-     * @param string $backupPath Path where the backup file should be saved.
-     */
-    private function createBackupDirectory(string $backupPath): void
-    {
-        if (!is_dir($backupPath)) {
-            mkdir($backupPath, 0755, true);
-        }
-    }
-
-    /**
-     * Writes the backup file header.
-     *
-     * @param string $backupFile Path to the backup file.
-     */
-    private function writeBackupHeader(string $backupFile): void
-    {
-        $header = "-- MySQL Backup\n";
-        $header .= "-- https://github.com/ramazancetinkaya/mysql-backup\n";
-        $header .= "--\n";
-        $header .= "-- Host: " . $this->pdo->getAttribute(PDO::ATTR_CONNECTION_STATUS) . "\n";
-        $header .= "-- Generation Time: " . date('Y-m-d H:i:s') . "\n";
-        $header .= "-- Server Version: " . $this->pdo->getAttribute(PDO::ATTR_SERVER_VERSION) . "\n";
-        $header .= "-- PHP Version: " . phpversion() . "\n\n";
-
-        file_put_contents($backupFile, $header, FILE_APPEND);
-    }
-
-    /**
-     * Writes the backup file footer.
-     *
-     * @param string $backupFile Path to the backup file.
-     */
-    private function writeBackupFooter(string $backupFile): void
-    {
-        $footer = "-- End of MySQL Backup.\n";
-        $footer .= "-- Thank you for using the MySQL Backup library!\n";
-        $footer .= "-- Ramazan Çetinkaya <ramazancetinkayadev@outlook.com>\n";
-        $footer .= "-- https://github.com/ramazancetinkaya\n";
-    
-        file_put_contents($backupFile, $footer, FILE_APPEND);
-    }
-
-    /**
-     * Performs backup of all tables in the database.
-     *
-     * @param string $backupFile Path to the backup file.
-     */
-    private function backupTables(string $backupFile): void
-    {
-        $tables = $this->getDatabaseTables();
-
-        foreach ($tables as $table) {
-            $this->backupTable($table, $backupFile);
-        }
-    }
-
-    /**
-     * Performs backup of a specific table in the database.
-     *
-     * @param string $table Table name.
-     * @param string $backupFile Path to the backup file.
-     */
-    private function backupTable(string $table, string $backupFile): void
-    {
-        $sql = "SELECT * FROM `$table`";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (!empty($rows)) {
-            $this->writeTableBackupToFile($table, $rows, $backupFile);
-        }
-    }
-
-    /**
-     * Writes table data to the backup file.
-     *
-     * @param string $table Table name.
-     * @param array $rows Table rows.
-     * @param string $backupFile Path to the backup file.
-     */
-    private function writeTableBackupToFile(string $table, array $rows, string $backupFile): void
-    {
-        $handle = fopen($backupFile, 'a');
-        if ($handle) {
-            fwrite($handle, "-- --------------------------------------------------------\n");
-            fwrite($handle, "-- Table structure for table `$table`\n");
-            fwrite($handle, "-- --------------------------------------------------------\n\n");
-
-            // Get table structure and write it to the backup file
-            $structure = $this->getTableStructure($table);
-            fwrite($handle, $structure);
-
-            fwrite($handle, "\n\n");
-            fwrite($handle, "-- --------------------------------------------------------\n");
-            fwrite($handle, "-- Data for table `$table`\n");
-            fwrite($handle, "-- --------------------------------------------------------\n\n");
-
-            // Write table rows to the backup file
-            foreach ($rows as $row) {
-                $rowValues = $this->escapeRowValues($row);
-                $insertStatement = "INSERT INTO `$table` VALUES (" . implode(', ', $rowValues) . ");\n";
-                fwrite($handle, $insertStatement);
-            }
-
-            fwrite($handle, "\n");
-            fclose($handle);
-        }
-    }
-
-    /**
-     * Retrieves the structure of a specific table.
-     *
-     * @param string $table Table name.
-     * @return string Table structure as SQL statements.
-     */
-    private function getTableStructure(string $table): string
-    {
-        $sql = "SHOW CREATE TABLE `$table`";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($result !== false) {
-            return $result['Create Table'] . ";\n";
-        }
-
-        return '';
-    }
-
-    /**
-     * Disables foreign key checks.
-     */
-    private function disableForeignKeyChecks(): void
-    {
-        $this->pdo->exec('SET FOREIGN_KEY_CHECKS=0');
-    }
-
-    /**
-     * Enables foreign key checks.
-     */
-    private function enableForeignKeyChecks(): void
-    {
-        $this->pdo->exec('SET FOREIGN_KEY_CHECKS=1');
-    }
-
-    /**
-     * Executes an SQL file.
-     *
-     * @param string $backupFile Path to the SQL backup file.
-     */
-    private function executeSqlFile(string $backupFile): void
-    {
-        $sql = file_get_contents($backupFile);
-        $this->pdo->exec($sql);
-    }
-
-    /**
-     * Retrieves the list of tables in the database.
-     *
-     * @return array List of table names.
-     */
-    private function getDatabaseTables(): array
-    {
-        $sql = "SHOW TABLES";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
-    }
-
-    /**
-     * Escapes row values to prevent SQL injection.
-     *
-     * @param array $row Table row.
-     * @return array Escaped row values.
-     */
-    private function escapeRowValues(array $row): array
-    {
-        foreach ($row as &$value) {
-            if ($value === null) {
-                $value = 'NULL';
+            // Backup tables
+            if ($tables) {
+                $this->backupTables($tables, $includeData, $backupFile);
             } else {
-                $value = $this->pdo->quote($value);
+                $this->backupAllTables($includeData, $backupFile);
+            }
+
+            // Close the backup file
+            fclose($backupFile);
+
+            // If archive option is enabled, zip the backup file
+            if ($archive) 
+            {
+                $backupFileName = $this->archiveBackupFile($backupFileName);
+            }
+
+            // If email recipient is provided, send the backup file
+            if ($emailRecipient) 
+            {
+                $this->sendBackupByEmail($backupFileName, $emailRecipient);
+            }
+
+            // Commit transaction
+            $this->db->commit();
+
+            return $backupFileName;
+        } catch (Exception $e) {
+            // Rollback transaction on failure
+            $this->db->rollBack();
+            throw $e;
+        } finally {
+            // Re-enable foreign key checks
+            $this->db->exec('SET foreign_key_checks = 1');
+        }
+    }
+
+    /**
+     * Restore the database from a backup file.
+     * 
+     * @param string $backupFilePath Path to the backup file.
+     * @param bool $dropTables Whether to drop existing tables before restoring data. Default is true.
+     * @throws Exception If restore process fails.
+     */
+    public function restore($backupFilePath, $dropTables = true) {
+        try {
+            // Begin transaction
+            $this->db->beginTransaction();
+
+            // Drop tables if requested
+            if ($dropTables) {
+                // Extract table names from backup file
+                $tables = $this->extractTableNames($backupFilePath);
+
+                // Drop tables from the database
+                $this->dropTables($tables);
+            }
+
+            // Read backup file
+            $backupContent = file_get_contents($backupFilePath);
+
+            // Execute backup content as SQL queries
+            $queries = explode(';', $backupContent);
+            foreach ($queries as $query) {
+                if (trim($query) !== '') {
+                    $this->db->exec($query);
+                }
+            }
+
+            // Commit transaction
+            $this->db->commit();
+
+            return true;
+        } catch (Exception $e) {
+            // Rollback transaction on failure
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Extract table names from the backup file.
+     * 
+     * @param string $backupFilePath Path to the backup file.
+     * @return array Table names extracted from the backup file.
+     */
+    private function extractTableNames($backupFilePath) {
+        $backupContent = file_get_contents($backupFilePath);
+        preg_match_all('/Table structure for table `(\w+)`/', $backupContent, $matches);
+        return $matches[1];
+    }
+
+    /**
+     * Drop tables from the database.
+     * 
+     * @param array $tables Table names to be dropped.
+     * @throws Exception If dropping tables fails.
+     */
+    private function dropTables($tables) {
+        foreach ($tables as $table) {
+            $this->db->exec("DROP TABLE IF EXISTS `$table`");
+        }
+    }
+
+    /**
+     * Generate backup file name.
+     * 
+     * @param array|string|null $tables Names of the tables to backup.
+     * @return string Backup file name.
+     */
+    private function generateBackupFileName($tables) 
+    {
+        $dbName = $this->db->query('SELECT DATABASE()')->fetchColumn();
+        $fileName = $this->backupFolder . 'backup_' . $dbName . ($tables ? '-' . implode('_', (array) $tables) : '') . '-' . date('Y-m-d_His') . '.sql';
+        return $fileName;
+    }
+
+    /**
+     * Write backup header information to the backup file.
+     * 
+     * @param resource $backupFile File handle of the backup file.
+     */
+    private function writeBackupHeader($backupFile) 
+    {
+        fwrite($backupFile, "-- Database Backup Manager\n");
+        fwrite($backupFile, "-- This backup was created automatically by the Database Backup Manager\n");
+        fwrite($backupFile, "-- © " . date('Y') . " Ramazan Çetinkaya. All rights reserved.\n");
+        fwrite($backupFile, "-- https://github.com/ramazancetinkaya/mysql-backup\n");
+        fwrite($backupFile, "--\n");
+        fwrite($backupFile, "-- Host: " . $this->db->getAttribute(PDO::ATTR_CONNECTION_STATUS) . "\n");
+        fwrite($backupFile, "-- Generated on: " . date('Y-m-d H:i:s') . "\n");
+        fwrite($backupFile, "-- Server version: " . $this->db->getAttribute(PDO::ATTR_SERVER_VERSION) . "\n\n");
+    }
+
+    /**
+     * Backup specified tables.
+     * 
+     * @param array|string $tables Names of the tables to backup.
+     * @param bool $includeData Whether to include table data in the backup.
+     * @param resource $backupFile File handle of the backup file.
+     */
+    private function backupTables($tables, $includeData, $backupFile) 
+    {
+        foreach ((array) $tables as $table) {
+            $this->backupTableStructure($table, $backupFile);
+            if ($includeData) {
+                $this->backupTableData($table, $backupFile);
             }
         }
+    }
 
-        return $row;
+    /**
+     * Backup all tables in the database.
+     * 
+     * @param bool $includeData Whether to include table data in the backup.
+     * @param resource $backupFile File handle of the backup file.
+     */
+    private function backupAllTables($includeData, $backupFile) 
+    {
+        $stmt = $this->db->query("SHOW TABLES");
+        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $this->backupTables($tables, $includeData, $backupFile);
+    }
+
+    /**
+     * Backup table structure.
+     * 
+     * @param string $tableName Name of the table to backup.
+     * @param resource $backupFile File handle of the backup file.
+     */
+    private function backupTableStructure($tableName, $backupFile) 
+    {
+        $stmt = $this->db->prepare("SHOW CREATE TABLE $tableName");
+        $stmt->execute();
+        $tableStructure = $stmt->fetch(PDO::FETCH_ASSOC);
+        fwrite($backupFile, "--\n-- Table structure for table `$tableName`\n--\n\n");
+        fwrite($backupFile, $tableStructure['Create Table'] . ";\n\n");
+    }
+
+    /**
+     * Backup table data.
+     * 
+     * @param string $tableName Name of the table to backup.
+     * @param resource $backupFile File handle of the backup file.
+     */
+    private function backupTableData($tableName, $backupFile) {
+        $stmt = $this->db->prepare("SELECT * FROM $tableName");
+        $stmt->execute();
+        $tableData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (empty($tableData)) {
+            fwrite($backupFile, "--\n-- No data found for table `$tableName`\n--\n\n");
+            return;
+        }
+        
+        fwrite($backupFile, "--\n-- Dumping data for table `$tableName`\n--\n\n");
+        fwrite($backupFile, "INSERT INTO `$tableName` (");
+        $fields = array_keys($tableData[0]);
+        fwrite($backupFile, "`" . implode("`, `", $fields) . "`");
+        fwrite($backupFile, ") VALUES\n");
+        foreach ($tableData as $row) {
+            fwrite($backupFile, "(");
+            $values = array_map(function($value) {
+                return "'" . addslashes($value) . "'";
+            }, array_values($row));
+            fwrite($backupFile, implode(", ", $values));
+            fwrite($backupFile, "),\n");
+        }
+        // Remove the trailing comma and newline character from the last row
+        fseek($backupFile, -2, SEEK_END);
+        fwrite($backupFile, ";\n\n");
+        fwrite($backupFile, "-- End of database backup process\n");
+    }
+
+    /**
+     * Archive backup file.
+     * 
+     * @param string $backupFileName Path to the backup file.
+     * @return string Path to the archived backup file.
+     * @throws Exception If archiving fails.
+     */
+    private function archiveBackupFile($backupFileName) 
+    {
+        $zipFileName = $backupFileName . '.zip';
+        $zip = new ZipArchive();
+        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
+            $zip->addFile($backupFileName, basename($backupFileName));
+            $zip->close();
+            unlink($backupFileName);
+            return $zipFileName;
+        } else {
+            throw new Exception('Failed to create zip archive.');
+        }
+    }
+
+    /**
+     * Send backup file by email.
+     * 
+     * @param string $backupFileName Path to the backup file.
+     * @param string $recipient Email address of the recipient.
+     * @throws Exception If sending email fails.
+     */
+    private function sendBackupByEmail($backupFileName, $recipient) 
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.example.com'; // Gmail SMTP: smtp.gmail.com
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'your-email@example.com';
+            $mail->Password   = 'your-email-password';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+
+            // Recipients
+            $mail->setFrom('from@example.com', 'Database Backup Manager');
+            $mail->addAddress($recipient);
+
+            // Attach backup file
+            $mail->addAttachment($backupFileName);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Database Backup';
+            $mail->Body    = '
+                <html>
+                <body>
+                    <p>Hello,</p>
+                    <p>Please find attached the database backup file you requested.</p>
+                    <p>This backup was created automatically by the <a href="https://github.com/ramazancetinkaya/mysql-backup/">Database Backup Manager</a>.</p>
+                </body>
+                </html>
+            ';
+            $mail->send();
+        } catch (Exception $e) {
+            throw new Exception('Backup email could not be sent. Mailer Error: ' . $mail->ErrorInfo);
+        }
     }
 }
