@@ -129,7 +129,7 @@ $backup = $mysqlBackup->backup(['tablename1', 'tablename2']);
 $backup = $mysqlBackup->backup(true); // Default is true
 
 // Archiving
-$backup = $mysqlBackup->backup(true, true); // Default is false
+$backup = $mysqlBackup->backup(true, false); // Default is false
 
 // Send the backup file by email
 $backup = $mysqlBackup->backup(true, true, 'recipient@example.com'); // Default is null
@@ -148,7 +148,7 @@ $backupFile = 'backup_wordpress-2024-05-09_214345.sql';
 $restore = $mysqlBackup->restore($backupFile);
 
 // Whether to drop existing tables before restoring data
-$restore = $mysqlBackup->restore($backupFile, true); // Default is true.
+$restore = $mysqlBackup->restore($backupFile, true); // Default is true
 
 if ($restore) {
     echo "Database restored successfully.";
