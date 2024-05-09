@@ -1,26 +1,23 @@
 {
     "name": "ramazancetinkaya/mysql-backup",
-    "description": "MySQL Backup & Restore Library",
+    "description": "A PHP library for backing up and restoring MySQL databases",
     "type": "library",
-    "keywords": ["mysql", "backup", "restore", "pdo", "database"],
+    "keywords": ["php", "pdo", "phpmailer", "mysql", "database", "backup", "restore"],
     "license": "MIT",
     "authors": [
         {
             "name": "Ramazan Çetinkaya",
-            "email": "ramazancetinkayadev@outlook.com",
+            "email": "ramazancetinkayadev@hotmail.com",
             "homepage": "https://github.com/ramazancetinkaya"
         }
     ],
-    "version": "1.0.0",
     "require": {
-        "php": ">=8.0",
-        "ext-pdo": "*",
-        "ext-pdo_mysql": "*"
+        "php": "^8.0",
+        "phpmailer/phpmailer": "*"
     },
     "autoload": {
         "psr-4": {
-            "ramazancetinkaya\\": "src/"
+            "DatabaseBackupManager\\": "src/"
         }
-    },
-    "minimum-stability": "stable"
+    }
 }
