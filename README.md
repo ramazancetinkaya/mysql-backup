@@ -126,13 +126,13 @@ $backup = $mysqlBackup->backup(['tablename1']);
 $backup = $mysqlBackup->backup(['tablename1', 'tablename2']);
 
 // Include table data in the backup or vice versa
-$backup = $mysqlBackup->backup(true); // Default is true
+$backup = $mysqlBackup->backup(null, true); // Default is true
 
 // Archiving
-$backup = $mysqlBackup->backup(true, false); // Default is false
+$backup = $mysqlBackup->backup(null, true, false); // Default is false
 
 // Send the backup file by email
-$backup = $mysqlBackup->backup(true, true, 'recipient@example.com'); // Default is null
+$backup = $mysqlBackup->backup(null, true, true, 'recipient@example.com'); // Default is null
 
 if ($backup) {
     echo "Database backup created successfully.";
