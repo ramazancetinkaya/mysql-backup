@@ -108,6 +108,9 @@ class MySQLBackup
 
             // Open backup file for writing
             $backupFile = fopen($backupFileName, 'w');
+            if (!$backupFile) {
+                throw new Exception('Failed to open backup file for writing.');
+            }
 
             // Write header information to the backup file
             $this->writeBackupHeader($backupFile);
