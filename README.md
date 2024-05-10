@@ -5,6 +5,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/ramazancetinkaya/mysql-backup)](https://github.com/ramazancetinkaya/mysql-backup/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/ramazancetinkaya/mysql-backup)](https://github.com/ramazancetinkaya/mysql-backup/network)
 
+<p align="center">An update with the necessary configuration settings for sending emails via PHPMailer is coming soon. Stay tuned.</p>
+
 <p align="center">
   <a href="https://github.com/ramazancetinkaya/mysql-backup">
     <img src="https://www.mysql.com/common/logos/logo-mysql-170x115.png" alt="Logo">
