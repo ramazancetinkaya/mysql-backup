@@ -119,6 +119,9 @@ class MySQLBackup
                 $this->backupAllTables($includeData, $backupFile);
             }
 
+            // Backup process finished
+            fwrite($backupFile, "-- End of database backup process");
+
             // Close the backup file
             fclose($backupFile);
 
@@ -322,7 +325,6 @@ class MySQLBackup
         // Remove the trailing comma and newline character from the last row
         fseek($backupFile, -2, SEEK_END);
         fwrite($backupFile, ";\n\n");
-        fwrite($backupFile, "-- End of database backup process\n");
     }
 
     /**
