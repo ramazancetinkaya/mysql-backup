@@ -14,6 +14,8 @@
 
 namespace DatabaseBackupManager;
 
+use PDO;
+use ZipArchive;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
